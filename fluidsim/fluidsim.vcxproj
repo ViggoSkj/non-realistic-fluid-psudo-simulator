@@ -137,8 +137,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="RecourceLoader.cpp" />
     <ClCompile Include="glad\src\glad.c" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fragment.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resourceLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
