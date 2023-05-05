@@ -9,12 +9,14 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-void processInput(GLFWwindow* window)
+void processInput(GLFWwindow* window, bool* s)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        std::cout << "space" << std::endl;
+        *s = true;
+    else
+        *s = false;
 }
 
 
@@ -74,22 +76,17 @@ int main() {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
 
-    
-
     // shader
 
     // vertex
 
-    const char* vertexShaderSource = "#version 330 core\n"
-        "layout (location = 0) in vec2 aPos;\n"
-        "void main()\n"
-        "{\n"
-        "   gl_Position = vec4(aPos.x, aPos.y, 1.0, 1.0);\n"
-        "}\0";
+    std::string vertexShaderSource = readFile("./vertex.shader");
+    const char* vertexSrc = vertexShaderSource.c_str();
 
     unsigned int vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glShaderSource(vertexShader, 1, &vertexSrc, NULL);
+    glCompileShader(vertexShader);
 
     int success;
     char infoLog[512];
@@ -113,7 +110,7 @@ int main() {
     char infoLog2[512];
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success2);
 
-    if (!success) {
+    if (!success2) {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog2);
         std::cout << infoLog2 << std::endl;
     }
@@ -133,26 +130,40 @@ int main() {
     char infoLog3[512];
 
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success3);
-    if (!success) {
+    if (!success3) {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog3);
-        std::cout << infoLog << std::endl;
+        std::cout << infoLog3 << std::endl;
     }
+
+    int colorLocation = glGetUniformLocation(shaderProgram, "color");
     
     glUseProgram(shaderProgram);
+
+    // color thing
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     while (!glfwWindowShouldClose(window))
     {
         // input
-        processInput(window);
+        bool s = false;
+        processInput(window, &s);
 
         // rendering
-        glClearColor(0, 0.45f, 0.5f, 1.0f);
+        if (!s)
+        {
+            glClearColor(0.0f, 0.45f, 0.5f, 1.0f);
+            glUniform4f(colorLocation, 1.0f, 0.45f, 0.0f, 1.0f);
+        }
+        else
+        {
+            glClearColor(1.0f, 0.45f, 0.0f, 1.0f);
+            glUniform4f(colorLocation, 0.0f, 0.45f, 0.5f, 1.0f);
+        }
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
+        glUseProgram(shaderProgram);
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 

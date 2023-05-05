@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>$(SolutionDir)glfw/lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)glfw/lib;C:\Windows\System32;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)glfw/includes;$(SolutionDir)glad/include;$(SolutionDir)glad/src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>$(SolutionDir)glfw/lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)glfw/lib;C:\Windows\System32;$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)glfw/includes;$(SolutionDir)glad/include;$(SolutionDir)glad/src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -143,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="fragment.shader" />
+    <None Include="vertex.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resourceLoader.h" />

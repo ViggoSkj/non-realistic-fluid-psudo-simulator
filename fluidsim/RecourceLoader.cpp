@@ -16,7 +16,5 @@ std::string readFile(const char* filename)
 		stringBuffer[0] << string << "\n";
 	}
 
-	std::cout << stringBuffer[0].str() << std::endl;
-
 	return stringBuffer[0].str();
 }
