@@ -1,2 +1,3 @@
 ﻿  main.cpp
-  fluidsim.vcxproj -> C:\Users\viggosg\Documents\non-realistic-fluid-psudo-simulator\fluidsim\x64\Debug\fluidsim.exe
+C:\Users\viggo\Documents\non-realistic-fluid-psudo-simulator\fluidsim\main.cpp(172,25): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  fluidsim.vcxproj -> C:\Users\viggo\Documents\non-realistic-fluid-psudo-simulator\fluidsim\x64\Debug\fluidsim.exe

@@ -1,6 +1,8 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <glfw3.h>
+#include <vector>
+#include <random>
 
 #include "resourceLoader.h"
 
@@ -46,10 +48,10 @@ int main() {
     // triangel generation
 
     float vertices[] = {
-        -0.5f,  0.5f,
-         0.5f,  0.5f,
-         0.5f, -0.5f,
-        -0.5f, -0.5f
+        -0.5f,  0.5f,    1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
+         0.5f,  0.5f,    0.0f, 1.0f, 0.0f,   1.0f, 1.0f,
+         0.5f, -0.5f,    0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
+        -0.5f, -0.5f,    1.0f, 1.0f, 1.0f,   0.0f, 0.0f
     };
 
     uint32_t VAO;
@@ -62,8 +64,12 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(2 * sizeof(float)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(5 * sizeof(float)));
     glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
     // index buffer
     uint32_t indices[] = {
         0, 2, 3,
@@ -139,7 +145,58 @@ int main() {
     
     glUseProgram(shaderProgram);
 
-    // color thing
+    // texture
+
+    const int worldHeight = 100;
+    const int worldWidth = 100;
+    const int xDivisions = 10;
+    const int yDivisions = 10;
+
+    int xWorldLocation = glGetUniformLocation(shaderProgram, "xWorld");
+    int yWorldLocation = glGetUniformLocation(shaderProgram, "yWorld");
+    int xDivisionsLocation = glGetUniformLocation(shaderProgram, "xDivisions");
+    int yDivisionsLocation = glGetUniformLocation(shaderProgram, "yDivisions");
+
+    glUniform1i(xWorldLocation, worldWidth);
+    glUniform1i(yWorldLocation, worldHeight);
+    glUniform1i(xDivisionsLocation, xDivisions);
+    glUniform1i(yDivisionsLocation, yDivisions);
+
+    const int width = 100;
+    const int height = xDivisions * yDivisions;
+
+
+    float tex[width][height][3];
+
+    std::vector<float[2]> points;
+    std::srand(std::time(NULL));
+    for (int i = 0; i < 100; i++) {
+        int x = rand();
+        int y = rand();
+        int division = x % xDivisions + (y % yDivisions) * xDivisions;
+
+        for (int i = 0; i < width; i++) {
+            if (tex[division][i][2] != 1) {
+                tex[division][i][0] = (float)x/RAND_MAX;
+                tex[division][i][1] = (float)y/RAND_MAX;
+                tex[division][i][2] = 1;
+                break;
+            }
+        }
+    }
+
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_FLOAT, &tex[0][0][0]);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
