@@ -1,3 +1,5 @@
 ﻿  main.cpp
-C:\Users\viggo\Documents\non-realistic-fluid-psudo-simulator\fluidsim\main.cpp(172,25): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\viggo\Documents\non-realistic-fluid-psudo-simulator\fluidsim\main.cpp(156,46): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\viggo\Documents\non-realistic-fluid-psudo-simulator\fluidsim\main.cpp(202,30): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\viggo\Documents\non-realistic-fluid-psudo-simulator\fluidsim\main.cpp(203,30): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
   fluidsim.vcxproj -> C:\Users\viggo\Documents\non-realistic-fluid-psudo-simulator\fluidsim\x64\Debug\fluidsim.exe

@@ -147,55 +147,33 @@ int main() {
 
     // texture
 
-    const int worldHeight = 100;
-    const int worldWidth = 100;
-    const int xDivisions = 10;
-    const int yDivisions = 10;
+    const int width = 1;
 
-    int xWorldLocation = glGetUniformLocation(shaderProgram, "xWorld");
-    int yWorldLocation = glGetUniformLocation(shaderProgram, "yWorld");
-    int xDivisionsLocation = glGetUniformLocation(shaderProgram, "xDivisions");
-    int yDivisionsLocation = glGetUniformLocation(shaderProgram, "yDivisions");
-
-    glUniform1i(xWorldLocation, worldWidth);
-    glUniform1i(yWorldLocation, worldHeight);
-    glUniform1i(xDivisionsLocation, xDivisions);
-    glUniform1i(yDivisionsLocation, yDivisions);
-
-    const int width = 100;
-    const int height = xDivisions * yDivisions;
+    int xWorldLocation = glGetUniformLocation(shaderProgram, "width");
+    glUniform1i(xWorldLocation, width);
+    
+    int radiusSquaredLocation = glGetUniformLocation(shaderProgram, "radiusSquared");
+    glUniform1f(radiusSquaredLocation, 0.0001);
 
 
-    float tex[width][height][3];
+    float tex[width][3];
 
-    std::vector<float[2]> points;
-    std::srand(std::time(NULL));
-    for (int i = 0; i < 100; i++) {
-        int x = rand();
-        int y = rand();
-        int division = x % xDivisions + (y % yDivisions) * xDivisions;
-
-        for (int i = 0; i < width; i++) {
-            if (tex[division][i][2] != 1) {
-                tex[division][i][0] = (float)x/RAND_MAX;
-                tex[division][i][1] = (float)y/RAND_MAX;
-                tex[division][i][2] = 1;
-                break;
-            }
-        }
+    for (int i = 0; i < width; i++) {
+        tex[i][0] = (float)rand() / RAND_MAX;
+        tex[i][1] = (float)rand() / RAND_MAX;
     }
 
     unsigned int texture;
     glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_1D, texture);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_FLOAT, &tex[0][0][0]);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB, width, 0, GL_RGB, GL_FLOAT, &tex[0][0]);
+    glBindTexture(GL_TEXTURE_1D, texture);
 
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
@@ -218,6 +196,14 @@ int main() {
             glUniform4f(colorLocation, 0.0f, 0.45f, 0.5f, 1.0f);
         }
         glClear(GL_COLOR_BUFFER_BIT);
+
+
+        for (int i = 0; i < width; i++) {
+            tex[i][0] += 0.01*((float)rand() / RAND_MAX -0.5);
+            tex[i][1] += 0.01*((float)rand() / RAND_MAX -0.5);
+        }
+        glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB, width, 0, GL_RGB, GL_FLOAT, &tex[0][0]);
+
 
         glBindVertexArray(VAO);
         glUseProgram(shaderProgram);
